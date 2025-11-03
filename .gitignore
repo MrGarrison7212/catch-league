@@ -1,0 +1,17 @@
+# root
+.DS_Store
+.env
+application-local.yml
+
+# backend
+/backend/.idea/
+/backend/.gradle/
+/backend/build/
+/backend/out/
+/backend/uploads/
+/backend/data/
+
+# frontend
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.idea/
