@@ -1,0 +1,21 @@
+server:
+  port: 8080
+  address: 127.0.0.1
+
+spring:
+  application:
+    name: backend
+  datasource:
+    url: jdbc:h2:file:./data/catchleague;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true
+  springdoc:
+    swagger-ui:
+      path: /swagger
