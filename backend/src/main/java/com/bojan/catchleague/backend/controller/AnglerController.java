@@ -1,5 +1,7 @@
 package com.bojan.catchleague.backend.controller;
 
+import com.bojan.catchleague.backend.dto.AnglerDto;
+import com.bojan.catchleague.backend.mapper.AnglerMapper;
 import com.bojan.catchleague.backend.model.Angler;
 import com.bojan.catchleague.backend.repository.AnglerRepository;
 import jakarta.validation.Valid;
@@ -19,8 +21,8 @@ public class AnglerController {
     }
 
     @GetMapping
-    public List<Angler> all() {
-        return repo.findAll();
+    public List<AnglerDto> all() {
+        return repo.findAll().stream().map(AnglerMapper::toDto).toList();
     }
 
     @PostMapping
