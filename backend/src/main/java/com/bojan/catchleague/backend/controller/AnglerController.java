@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,6 +24,12 @@ public class AnglerController {
     @GetMapping
     public List<AnglerDto> all() {
         return repo.findAll().stream().map(AnglerMapper::toDto).toList();
+    }
+
+    @GetMapping("/{id}")
+    public AnglerDto byID(@PathVariable Long id){
+        Angler a = repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Angler not found."));
+        return AnglerMapper.toDto(a);
     }
 
     @PostMapping
