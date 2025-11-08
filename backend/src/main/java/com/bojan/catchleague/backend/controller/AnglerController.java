@@ -5,6 +5,7 @@ import com.bojan.catchleague.backend.mapper.AnglerMapper;
 import com.bojan.catchleague.backend.model.Angler;
 import com.bojan.catchleague.backend.repository.AnglerRepository;
 import jakarta.validation.Valid;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +38,19 @@ public class AnglerController {
         Angler saved = repo.save(new Angler(dto.getName()));
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        try {
+            repo.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (EmptyResultDataAccessException e) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.NOT_FOUND, "Angler not found"
+            );
+        }
+    }
+
 
 }
