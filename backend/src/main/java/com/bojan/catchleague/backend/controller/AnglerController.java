@@ -52,5 +52,22 @@ public class AnglerController {
         }
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<AnglerDto> patch(
+        @PathVariable Long id,
+        @Valid @RequestBody com.bojan.catchleague.backend.dto.AnglerUpdateDto dto) {
+
+        Angler entity = repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Angler not found."));
+
+        String newName = dto.getName().trim();
+        if(newName.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name must not be blank");
+        }
+        entity.setName(newName);
+        Angler saved = repo.save(entity);
+
+        return ResponseEntity.ok(AnglerMapper.toDto(saved));
+    }
+
 
 }
