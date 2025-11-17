@@ -3,11 +3,15 @@ package com.bojan.catchleague.backend.error;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.validation.FieldError;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
@@ -53,6 +57,39 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleResponseStatus(ResponseStatusException ex, HttpServletRequest req) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(ex.getStatusCode(), ex.getReason());
         pd.setTitle(defaultTitle(ex.getStatusCode().value()));
+        pd.setProperty("timestamp", OffsetDateTime.now());
+        pd.setProperty("path", req.getRequestURI());
+        return pd;
+    }
+
+    @ExceptionHandler({
+            MethodArgumentTypeMismatchException.class,
+            MissingServletRequestParameterException.class
+    })
+    public ProblemDetail handleBadRequest(Exception ex, HttpServletRequest req) {
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        pd.setTitle("Bad request");
+        pd.setDetail(ex.getMessage());
+        pd.setProperty("timestamp", OffsetDateTime.now());
+        pd.setProperty("path", req.getRequestURI());
+        return pd;
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail handleConflict(DataIntegrityViolationException ex, HttpServletRequest req) {
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        pd.setTitle("Data integrity violation");
+        pd.setDetail("Request conflicts with existing data.");
+        pd.setProperty("timestamp", OffsetDateTime.now());
+        pd.setProperty("path", req.getRequestURI());
+        return pd;
+    }
+
+    @ExceptionHandler({ ErrorResponseException.class, Exception.class })
+    public ProblemDetail handleUnhandled(Exception ex, HttpServletRequest req) {
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        pd.setTitle("Internal server error");
+        pd.setDetail("Unexpected error occurred.");
         pd.setProperty("timestamp", OffsetDateTime.now());
         pd.setProperty("path", req.getRequestURI());
         return pd;
