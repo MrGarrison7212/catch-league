@@ -1,6 +1,8 @@
 package com.bojan.catchleague.backend.error;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.validation.FieldError;
@@ -27,6 +29,22 @@ public class GlobalExceptionHandler {
             fieldErrors.put(fe.getField(), fe.getDefaultMessage());
         }
         pd.setProperty("errors", fieldErrors);
+        return pd;
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ProblemDetail handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest req) {
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        pd.setTitle("Constraint violation");
+        pd.setDetail("Request parameters failed validation.");
+        pd.setProperty("timestamp", OffsetDateTime.now());
+        pd.setProperty("path", req.getRequestURI());
+
+        Map<String, String> errors = new HashMap<>();
+        for (ConstraintViolation<?> v : ex.getConstraintViolations()) {
+            errors.put(v.getPropertyPath().toString(), v.getMessage());
+        }
+        pd.setProperty("errors", errors);
         return pd;
     }
 }
