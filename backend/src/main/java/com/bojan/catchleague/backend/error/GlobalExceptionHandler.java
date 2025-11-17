@@ -8,6 +8,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -46,5 +47,23 @@ public class GlobalExceptionHandler {
         }
         pd.setProperty("errors", errors);
         return pd;
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ProblemDetail handleResponseStatus(ResponseStatusException ex, HttpServletRequest req) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(ex.getStatusCode(), ex.getReason());
+        pd.setTitle(defaultTitle(ex.getStatusCode().value()));
+        pd.setProperty("timestamp", OffsetDateTime.now());
+        pd.setProperty("path", req.getRequestURI());
+        return pd;
+    }
+
+    private String defaultTitle(int status) {
+        return switch (status) {
+            case 400 -> "Bad request";
+            case 404 -> "Not found";
+            case 409 -> "Conflict";
+            default -> "Error";
+        };
     }
 }
