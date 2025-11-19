@@ -35,7 +35,7 @@ public class AnglerController {
 
     @PostMapping
     public ResponseEntity<Angler> create(@Valid @RequestBody com.bojan.catchleague.backend.dto.AnglerCreateDto dto) {
-        Angler saved = repo.save(new Angler(dto.getName()));
+        Angler saved = repo.save(new Angler(dto.getName(), dto.getEmail()));
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 

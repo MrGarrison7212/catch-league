@@ -15,7 +15,10 @@ public class Angler {
     private String email;
 
     public Angler() {}
-    public Angler(String name) { this.name = name; }
+    public Angler(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 
     public Long getId() { return id; }
     public String getName() { return name; }

@@ -7,6 +7,6 @@ public final class AnglerMapper {
     private AnglerMapper(){}
 
     public static AnglerDto toDto(Angler a){
-        return new AnglerDto(a.getId(), a.getName());
+        return new AnglerDto(a.getId(), a.getName(), a.getEmail());
     }
 }
