@@ -6,6 +6,7 @@ public class AnglerUpdateDto {
 
     @NotBlank(message = "name must not be blank")
     private String name;
+    private String email;
 
     public AnglerUpdateDto() {}
 
@@ -13,6 +14,10 @@ public class AnglerUpdateDto {
 
     public String getName() { return this.name; }
 
+    public String getEmail() { return this.email; }
+
     public void setName(String name) { this.name = name; }
+
+    public void setEmail(String email) { this.email = email; }
 
 }
