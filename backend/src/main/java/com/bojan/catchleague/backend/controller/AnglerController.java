@@ -59,11 +59,26 @@ public class AnglerController {
 
         Angler entity = repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Angler not found."));
 
-        String newName = dto.getName().trim();
-        if(newName.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name must not be blank");
+        if(dto.getName() != null){
+            String newName = dto.getName().trim();
+            if(newName.isEmpty()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name must not be blank");
+            }
+            entity.setName(newName);
         }
-        entity.setName(newName);
+        if(dto.getEmail() != null){
+            String newEmail = dto.getEmail().trim();
+            if(newEmail.isEmpty()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email must not be blank");
+            }
+            if (!newEmail.contains("@")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email format is invalid.");
+            }
+            if (repo.existsByEmailAndIdNot(newEmail, id)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "email is already taken.");
+            }
+            entity.setEmail(newEmail);
+        }
         Angler saved = repo.save(entity);
 
         return ResponseEntity.ok(AnglerMapper.toDto(saved));
