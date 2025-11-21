@@ -1,7 +1,13 @@
 package com.bojan.catchleague.backend.model;
 
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Instant;
+
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Angler {
     @Id
@@ -13,6 +19,14 @@ public class Angler {
 
     @Column(unique = true)
     private String email;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     public Angler() {}
     public Angler(String name, String email) {
