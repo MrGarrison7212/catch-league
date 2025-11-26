@@ -26,4 +26,11 @@ public class FishingLocation {
 
     public enum Type { RIVER, LAKE, POND, STREAM, CANAL }
 
+    public FishingLocation() {}
+    public FishingLocation(String name, Type type) {
+        this.name = name;
+        this.type = type;
+    }
+
+
 }
