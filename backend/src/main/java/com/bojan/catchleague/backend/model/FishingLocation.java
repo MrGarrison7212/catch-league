@@ -32,5 +32,23 @@ public class FishingLocation {
         this.type = type;
     }
 
+    @PrePersist
+    void prePersist() {
+        Instant now = Instant.now();
+        createdAt = now;
+        updatedAt = now;
+    }
 
+    @PreUpdate
+    void preUpdate() {
+        updatedAt = Instant.now();
+    }
+
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public Type getType() {return type; }
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getUpdatedAt() { return updatedAt; }
+    public void setName(String name) { this.name = name; }
+    public void setType(Type type) { this.type = type; }
 }
