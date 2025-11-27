@@ -28,6 +28,18 @@ public class Angler {
     @Column(nullable = false)
     private Instant updatedAt;
 
+    @PrePersist
+    void prePersist() {
+        Instant now = Instant.now();
+        createdAt = now;
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    void preUpdate() {
+        updatedAt = Instant.now();
+    }
+
     public Angler() {}
     public Angler(String name, String email) {
         this.name = name;
