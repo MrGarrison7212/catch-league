@@ -1,10 +1,12 @@
 package com.bojan.catchleague.backend.model;
 
 import jakarta.persistence.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "fishing_location")
 public class FishingLocation {
 
@@ -30,18 +32,6 @@ public class FishingLocation {
     public FishingLocation(String name, Type type) {
         this.name = name;
         this.type = type;
-    }
-
-    @PrePersist
-    void prePersist() {
-        Instant now = Instant.now();
-        createdAt = now;
-        updatedAt = now;
-    }
-
-    @PreUpdate
-    void preUpdate() {
-        updatedAt = Instant.now();
     }
 
     public Long getId() { return id; }
